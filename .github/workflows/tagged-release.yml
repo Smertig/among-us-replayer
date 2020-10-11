@@ -37,7 +37,7 @@ jobs:
           cmake -E make_directory among-us-replayer
           cmake -E copy bin/among-us-replayer.exe among-us-replayer/among-us-replayer.exe
           cmake -E copy_directory "${{github.workspace}}/res" among-us-replayer/res
-          cmake -E tar cfv among-us-replayer.zip among-us-replayer
+          cmake -E tar cfv among-us-replayer.zip --format=zip among-us-replayer
 
       - name: Publish
         uses: marvinpinto/action-automatic-releases@latest
