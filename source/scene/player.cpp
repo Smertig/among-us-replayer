@@ -49,7 +49,7 @@ void player::set_scale(float alive_scale, float dead_scale, float dead_body_scal
 
     m_name.setCharacterSize(static_cast<unsigned>(25 * real_width / expected_width));
     m_name.setOutlineThickness(2.0f * real_width / expected_width);
-    m_name.setPosition(-m_name.getLocalBounds().width/2, -m_alive_sprite.getLocalBounds().height * 1.2 * alive_scale);
+    m_name.setPosition(std::round(-m_name.getLocalBounds().width / 2.f), std::round(-m_alive_sprite.getLocalBounds().height * 1.2f * alive_scale));
 }
 
 void player::set_position(sf::Vector2f pos, bool dir_is_right) {

@@ -4,6 +4,7 @@
 #include <ui/player.hpp>
 #include <replay/replay.hpp>
 #include <util/platform.hpp>
+#include <resources/font.hpp>
 
 #include <imgui-SFML.h>
 #include <imgui.h>
@@ -47,8 +48,9 @@ int main(int argc, char** argv) {
         window.setVerticalSyncEnabled(true);
 
         // Prepare UI
-        ui::player player(window);
-        ImGui::SFML::Init(window);
+        ImGui::SFML::Init(window, false);
+        init_fonts();
+        ui::player player(window, r);
 
         // Prepare map and camera
         scene::map m(r.get_map_id());
@@ -94,16 +96,6 @@ int main(int argc, char** argv) {
                 for (const auto& [id, info] : r.get_players()) {
                     const auto state = info.get_interpolated(player.get_time());
                     m.set_player_state(id, state.position, state.velocity, state.is_dead);
-                }
-            }
-
-            if (player.get_time() >= r.get_duration()) {
-                if (platform::msgbox_ask("End of round. Restart?")) {
-                    player.set_time(0);
-                    deltaClock.restart();
-                }
-                else {
-                    window.close();
                 }
             }
 
