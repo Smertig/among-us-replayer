@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
 project(among-us-replayer)
 
-set(CMAKE_CXX_STANDARD 20)
+add_compile_options(/std:c++latest)
+add_compile_options(/Zc:char8_t-)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # conan
