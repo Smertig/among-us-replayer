@@ -5,6 +5,6 @@
 namespace app_info {
 
 constexpr std::string_view name    = "Replayer";
-constexpr std::string_view version = "0.2.0";
+constexpr std::string_view version = "0.2.1";
 
 } // namespace app_info
