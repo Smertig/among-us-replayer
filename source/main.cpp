@@ -1,6 +1,7 @@
 #include <scene/map.hpp>
 #include <scene/player.hpp>
 #include <scene/camera.hpp>
+#include <ui/player.hpp>
 #include <replay/replay.hpp>
 #include <util/platform.hpp>
 
@@ -37,13 +38,16 @@ int main(int argc, char** argv) {
         r.parse(ifs);
 
         // Try fix paths
-        if (!std::filesystem::exists("res/config.json"))
+        if (!std::filesystem::exists("res/config.json")) {
             platform::fix_working_directory();
+        }
 
         // Make window
         sf::RenderWindow window(sf::VideoMode::getFullscreenModes().front(), platform::get_app_fullname());
         window.setVerticalSyncEnabled(true);
 
+        // Prepare UI
+        ui::player player(window);
         ImGui::SFML::Init(window);
 
         // Prepare map and camera
@@ -58,12 +62,8 @@ int main(int argc, char** argv) {
         camera.zoom(m.get_default_zoom());
 
         sf::Clock deltaClock;
-        int current_time = 0;
-
         while (window.isOpen()) {
             const auto dt = deltaClock.restart();
-
-            current_time += dt.asMilliseconds() * 3;
 
             // Process events
             sf::Event event{};
@@ -81,23 +81,25 @@ int main(int argc, char** argv) {
 
             // Update
             ImGui::SFML::Update(window, dt);
+            player.update(dt.asMilliseconds());
 
-            if (r.is_meeting(current_time)) {
+            if (r.is_meeting(player.get_time())) {
                 for (const auto& [id, info] : r.get_players()) {
                     m.set_meeting(id);
                 }
-                current_time += 1000;
+
+                player.update(1000);
             }
             else {
                 for (const auto& [id, info] : r.get_players()) {
-                    const auto state = info.get_interpolated(current_time);
+                    const auto state = info.get_interpolated(player.get_time());
                     m.set_player_state(id, state.position, state.velocity, state.is_dead);
                 }
             }
 
-            if (current_time >= r.get_duration()) {
+            if (player.get_time() >= r.get_duration()) {
                 if (platform::msgbox_ask("End of round. Restart?")) {
-                    current_time = 0;
+                    player.set_time(0);
                     deltaClock.restart();
                 }
                 else {
@@ -109,6 +111,7 @@ int main(int argc, char** argv) {
             window.clear();
             window.setView(camera.view());
             m.draw(window, sf::Transform::Identity);
+            player.render();
             ImGui::SFML::Render(window);
             window.display();
         }
