@@ -70,4 +70,8 @@ void map::draw(sf::RenderTarget& target, const sf::Transform& parent_transform) 
     }
 }
 
+sf::Vector2f map::convert_position(const std::array<float, 2>& game_position) const {
+    return m_converter({ game_position[0], game_position[1] });
+}
+
 } // namespace scene

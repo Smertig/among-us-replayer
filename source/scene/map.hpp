@@ -36,6 +36,8 @@ public:
     float get_default_zoom() const;
 
     void draw(sf::RenderTarget& target, const sf::Transform& parent_transform) const;
+
+    sf::Vector2f convert_position(const std::array<float, 2>& game_position) const;
 };
 
 } // namespace scene

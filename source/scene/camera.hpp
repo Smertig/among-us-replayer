@@ -27,7 +27,7 @@ public:
 
     void move(sf::Vector2f delta);
 
-    void process_event(const sf::Event& event);
+    void process_event(const sf::Event& event, bool& was_dragged);
 };
 
 } // namespace scene

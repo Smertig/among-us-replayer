@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
         // Prepare UI
         ImGui::SFML::Init(window, false);
         init_fonts();
-        ui::player player(window, r);
+        ui::player ui_player(window, r);
 
         // Prepare map and camera
         scene::map m(r.get_map_id());
@@ -68,12 +68,13 @@ int main(int argc, char** argv) {
             const auto dt = deltaClock.restart();
 
             // Process events
+            bool was_dragged = false;
             sf::Event event{};
             while (window.pollEvent(event)) {
                 ImGui::SFML::ProcessEvent(event);
 
                 if (!ImGui::GetIO().WantCaptureMouse) {
-                    camera.process_event(event);
+                    camera.process_event(event, was_dragged);
                 }
 
                 if (event.type == sf::Event::Closed) {
@@ -83,27 +84,35 @@ int main(int argc, char** argv) {
 
             // Update
             ImGui::SFML::Update(window, dt);
-            player.update(dt.asMilliseconds());
+            ui_player.update(dt.asMilliseconds());
 
-            if (r.is_meeting(player.get_time())) {
+            if (r.is_meeting(ui_player.get_time())) {
                 for (const auto& [id, info] : r.get_players()) {
                     m.set_meeting(id);
                 }
 
-                player.update(1000);
+                ui_player.update(1000);
             }
             else {
                 for (const auto& [id, info] : r.get_players()) {
-                    const auto state = info.get_interpolated(player.get_time());
+                    const auto state = info.get_interpolated(ui_player.get_time());
                     m.set_player_state(id, state.position, state.velocity, state.is_dead);
                 }
+            }
+
+            if (was_dragged) {
+                ui_player.reset_traced_player();
+            }
+            else if (auto player_id = ui_player.get_traced_player_id(); player_id.has_value()) {
+                auto player_state = r.get_players().at(*player_id).get_interpolated(ui_player.get_time());
+                camera.set_center(m.convert_position(player_state.position));
             }
 
             // Render
             window.clear();
             window.setView(camera.view());
             m.draw(window, sf::Transform::Identity);
-            player.render();
+            ui_player.render();
             ImGui::SFML::Render(window);
             window.display();
         }

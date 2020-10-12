@@ -28,7 +28,7 @@ void camera::move(sf::Vector2f delta) {
     m_view.move(delta);
 }
 
-void camera::process_event(const sf::Event& event) {
+void camera::process_event(const sf::Event& event, bool& was_dragged) {
     switch (event.type) {
         case sf::Event::Resized: {
             resize({
@@ -64,6 +64,8 @@ void camera::process_event(const sf::Event& event) {
                 move(m_window.mapPixelToCoords(*m_last_mouse_drag_position) - m_window.mapPixelToCoords(current_mouse_position));
 
                 m_last_mouse_drag_position = current_mouse_position;
+
+                was_dragged = true;
             }
             break;
         }
