@@ -42,7 +42,7 @@ void player::render() {
     ImGui::Separator();
 
     ImGui::Columns(2);
-    ImGui::SetColumnWidth(0, 100.f);
+    ImGui::SetColumnWidth(0, 150.f);
     ImGui::SetColumnWidth(1, 200.f);
 
     std::optional<std::uint8_t> selected_player_id = m_traced_player_id;

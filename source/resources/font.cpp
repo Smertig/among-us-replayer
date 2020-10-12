@@ -5,7 +5,17 @@
 
 void init_fonts() {
     ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->AddFontDefault();
+
+    static const ImWchar glyph_ranges[] = {
+        0x0020, 0x00FF, // Basic Latin + Latin Supplement
+        0x0400, 0x052F, // [Cyrillic] Cyrillic + Cyrillic Supplement
+        0x2DE0, 0x2DFF, // [Cyrillic] Cyrillic Extended-A
+        0xA640, 0xA69F, // [Cyrillic] Cyrillic Extended-B
+        0x2600, 0x26ff, // https://unicode-table.com/ru/blocks/miscellaneous-symbols/
+        0
+    };
+
+    io.Fonts->AddFontFromFileTTF("res/arial.ttf", 18.0f, nullptr, glyph_ranges);
 
     // merge in icons from Font Awesome
     static const ImWchar icons_ranges[] = {
