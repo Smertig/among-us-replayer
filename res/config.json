@@ -29,7 +29,7 @@
 			"player_pixel_width": 33,
 			"ghost_pixel_width": 33,
 			"body_pixel_width": 33,
-			"center": [ 19.4, -16.7 ],
+			"center": [ 16.64, -2.00 ],
 			"default_zoom": 0.5,
 			"calibration": {
 				"game_pos": [[ 4.6196585, -7.158373 ], [ 37.61822, -21.090553 ]],
