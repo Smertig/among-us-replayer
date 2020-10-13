@@ -93,11 +93,10 @@ int main(int argc, char** argv) {
 
                 ui_player.update(1000);
             }
-            else {
-                for (const auto& [id, info] : r.get_players()) {
-                    const auto state = info.get_interpolated(ui_player.get_time());
-                    m.set_player_state(id, state.position, state.velocity, state.is_dead);
-                }
+
+            for (const auto& [id, info] : r.get_players()) {
+                const auto state = info.get_interpolated(ui_player.get_time());
+                m.set_player_state(id, state.position, state.velocity, state.is_dead);
             }
 
             if (was_dragged) {
