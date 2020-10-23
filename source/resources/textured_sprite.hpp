@@ -8,11 +8,12 @@ namespace resources {
 
 class textured_sprite : public sf::Drawable {
     struct texture_part {
-        sf::Texture texture;
-        sf::Sprite sprite;
+        sf::Texture   texture;
+        sf::Sprite    sprite;
+        sf::Transform transform;
     };
 
-    std::vector<texture_part> m_parts;
+    std::vector<std::unique_ptr<texture_part>> m_parts;
 
 public:
     explicit textured_sprite() = default;
