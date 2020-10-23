@@ -18,12 +18,6 @@ void msgbox_warning(std::string_view text) {
     MessageBoxA(nullptr, std::string(text).c_str(), get_app_fullname().c_str(), MB_ICONWARNING);
 }
 
-bool msgbox_ask(std::string_view text) {
-    const auto result = MessageBoxA(nullptr, std::string(text).c_str(), get_app_fullname().c_str(), MB_YESNO | MB_ICONINFORMATION);
-
-    return result == IDYES;
-}
-
 void fix_working_directory() {
     std::array<wchar_t, MAX_PATH> path = { 0 };
     GetModuleFileNameW(nullptr, path.data(), path.size());
