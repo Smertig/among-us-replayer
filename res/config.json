@@ -25,15 +25,15 @@
 			}
 		},
 		{
-			"path": "res/maps/polus.jpg",
-			"player_pixel_width": 33,
-			"ghost_pixel_width": 33,
-			"body_pixel_width": 33,
+			"path": "res/maps/polus.png",
+			"player_pixel_width": 89,
+			"ghost_pixel_width": 89,
+			"body_pixel_width": 89,
 			"center": [ 16.64, -2.00 ],
-			"default_zoom": 0.5,
+			"default_zoom": 2.0,
 			"calibration": {
 				"game_pos": [[ 4.6196585, -7.158373 ], [ 37.61822, -21.090553 ]],
-				"texture_pos": [ [ 357, 651 ], [ 2550, 1576 ] ]
+				"texture_pos": [ [ 1170, 1994 ], [ 6892, 4408 ] ]
 			}
 		}
 	],
