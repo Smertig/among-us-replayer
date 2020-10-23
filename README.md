@@ -30,6 +30,29 @@ All the replays can be found at `/Steam/steamapps/common/Among Us/replay` folder
 
 [Youtube](https://youtu.be/WmfwYmQp_js)
 
+## How To Build
+
+Requirements:
+- Windows
+- C++17 compiler (tested on MSVC 16.7.5)
+- CMake 3.17
+- [Conan](https://conan.io/downloads.html) (C++ package manager)
+
+```shell script
+## in repo directory
+
+# 1. Create build dir
+mkdir build && cd build
+
+# 2. Configure CMake project
+cmake .. -DCMAKE_BUILD_TYPE=Release -A Win32
+
+# 3. Build project
+cmake --build . --config Release --target among-us-replayer
+
+# 4. Success! Your replayer is at `bin/among-us-replayer.exe`
+```
+
 ## License
 
 - MIT
