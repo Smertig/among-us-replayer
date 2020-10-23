@@ -8,15 +8,15 @@ namespace scene {
 player::player(std::uint8_t id, std::uint8_t color, const std::string& name, bool is_impostor) {
     m_id = id;
 
-    m_alive_sprite.setOrigin(resources::config::get_player_origin());
     m_alive_sprite.load(resources::config::get_player_path(color));
+    m_alive_sprite.setOrigin(resources::config::get_player_origin());
 
-    m_dead_sprite.setOrigin(resources::config::get_ghost_origin());
     m_dead_sprite.load(resources::config::get_ghost_path(color));
+    m_dead_sprite.setOrigin(resources::config::get_ghost_origin());
     m_dead_sprite.setColor(sf::Color(255, 255, 255, 100));
 
-    m_dead_body_sprite.setOrigin(resources::config::get_body_origin());
     m_dead_body_sprite.load(resources::config::get_body_path(color));
+    m_dead_body_sprite.setOrigin(resources::config::get_body_origin());
 
     static sf::Font font = []{
         sf::Font font;

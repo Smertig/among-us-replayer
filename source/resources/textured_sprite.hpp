@@ -7,8 +7,12 @@
 namespace resources {
 
 class textured_sprite : public sf::Drawable {
-    sf::Texture m_texture;
-    sf::Sprite m_sprite;
+    struct texture_part {
+        sf::Texture texture;
+        sf::Sprite sprite;
+    };
+
+    std::vector<texture_part> m_parts;
 
 public:
     explicit textured_sprite() = default;
