@@ -20,7 +20,13 @@ void player::update(int dt) {
 }
 
 void player::render() {
-    ImGui::Begin("Player", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoSavedSettings);
+    const float FIRST_COLUMN_WIDTH    = 150.0f;
+    const float SECOND_COLUMN_WIDTH   = 200.0f;
+    const float EXPECTED_WINDOW_WIDTH = FIRST_COLUMN_WIDTH + SECOND_COLUMN_WIDTH + 20.0f;
+
+    ImGui::SetNextWindowPos({ m_window.getSize().x / 2.0f - EXPECTED_WINDOW_WIDTH / 2.0f, 200.f }, ImGuiCond_FirstUseEver);
+
+    ImGui::Begin("Player", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoSavedSettings);
 
     const auto   BUTTON_SIZE = ImVec2(25, 25);
     const ImVec4 COLOR_WHITE = ImColor(0xFF, 0xFF, 0xFF);
@@ -42,8 +48,8 @@ void player::render() {
     ImGui::Separator();
 
     ImGui::Columns(2);
-    ImGui::SetColumnWidth(0, 150.f);
-    ImGui::SetColumnWidth(1, 200.f);
+    ImGui::SetColumnWidth(0, FIRST_COLUMN_WIDTH);
+    ImGui::SetColumnWidth(1, SECOND_COLUMN_WIDTH);
 
     std::optional<std::uint8_t> selected_player_id = m_traced_player_id;
     for (const auto& [id, player] : m_replay.get_players()) {
@@ -90,8 +96,6 @@ void player::render() {
     }
 
     ImGui::Columns();
-
-    ImGui::SetWindowPos({ m_window.getSize().x / 2.0f - ImGui::GetWindowSize().x / 2.0f, 200.f });
 
     ImGui::End();
 }
