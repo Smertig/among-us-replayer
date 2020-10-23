@@ -149,10 +149,10 @@ void replay::parse(std::istream& is) {
                         }
 
                         m_players.at(id).timeline.emplace_back(player_info::player_state{
-                            .dt = dt,
-                            .position = position,
-                            .velocity = velocity,
-                            .is_dead = is_dead
+                            /* dt */ dt,
+                            /* position */ position,
+                            /* velocity */ velocity,
+                            /* is_dead */ is_dead
                         });
 
                         updated_players.insert(id);
@@ -160,7 +160,7 @@ void replay::parse(std::istream& is) {
 
                     if (!need_refresh) {
                         for (auto& [id, player] : m_players) {
-                            if (updated_players.contains(id)) {
+                            if (updated_players.count(id) > 0) {
                                 continue;
                             }
 
@@ -228,21 +228,22 @@ replay::player_info::player_state replay::player_info::get_interpolated(std::int
 
     float alpha = 1.0f * (time - prev_state.dt) / (next_state.dt - prev_state.dt);
 
-    auto interpolate = [alpha]<typename T>(T from, T to) {
-        return from + static_cast<T>(alpha * (to - from));
+    auto interpolate = [alpha](auto from, auto to) {
+        static_assert(std::is_same_v<decltype(from), decltype(to)>);
+        return from + static_cast<decltype(from)>(alpha * (to - from));
     };
 
     return player_state{
-        .dt = time,
-        .position = {
+        /* dt */ time,
+        /* position */ {
             interpolate(prev_state.position[0], next_state.position[0]),
             interpolate(prev_state.position[1], next_state.position[1])
         },
-        .velocity = {
+        /* velocity */ {
             interpolate(prev_state.velocity[0], next_state.velocity[0]),
             interpolate(prev_state.velocity[1], next_state.velocity[1])
         },
-        .is_dead = next_state.is_dead
+        /* is_dead */ next_state.is_dead
     };
 }
 
