@@ -13,11 +13,14 @@ class camera {
     sf::View m_view;
     float m_zoom = 1.0f;
     std::optional<sf::Vector2i> m_last_mouse_drag_position;
+    bool m_was_dragged = false;
 
 public:
     explicit camera(sf::RenderWindow& window);
 
     void zoom(float value);
+
+    float zoom() const;
 
     void set_center(sf::Vector2f center);
 
@@ -27,7 +30,9 @@ public:
 
     void move(sf::Vector2f delta);
 
-    void process_event(const sf::Event& event, bool& was_dragged);
+    void process_event(const sf::Event& event);
+
+    bool was_dragged() const;
 };
 
 } // namespace scene

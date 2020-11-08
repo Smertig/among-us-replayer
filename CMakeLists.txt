@@ -26,6 +26,7 @@ conan_cmake_run(
 
 add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/source/main.cpp
+        ${PROJECT_SOURCE_DIR}/source/app.cpp
         ${PROJECT_SOURCE_DIR}/source/scene/map.cpp
         ${PROJECT_SOURCE_DIR}/source/scene/player.cpp
         ${PROJECT_SOURCE_DIR}/source/scene/camera.cpp
@@ -33,6 +34,7 @@ add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/source/resources/textured_sprite.cpp
         ${PROJECT_SOURCE_DIR}/source/resources/font.cpp
         ${PROJECT_SOURCE_DIR}/source/ui/player.cpp
+        ${PROJECT_SOURCE_DIR}/source/ui/file_dialog.cpp
         ${PROJECT_SOURCE_DIR}/source/replay/replay.cpp
         ${PROJECT_SOURCE_DIR}/source/util/platform.cpp
         )

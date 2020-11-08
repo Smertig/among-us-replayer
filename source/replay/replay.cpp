@@ -53,7 +53,7 @@ struct binary_deserializer {
     }
 };
 
-void replay::parse(std::istream& is) {
+void replay::parse(std::istream& is, bool header_only) {
     constexpr std::array<char, 4> SIGNATURE{ 'A', 'U', 'R', 'P' };
 
     binary_deserializer deser{ is };
@@ -86,6 +86,10 @@ void replay::parse(std::istream& is) {
         deser.read(info);
 
         m_players[info.id] = info;
+    }
+
+    if (header_only) {
+        return;
     }
 
     try {
@@ -253,4 +257,16 @@ int replay::get_duration() const {
         duration = std::max(duration, player.timeline.back().dt);
     }
     return duration;
+}
+
+int replay::get_binary_version() const {
+    return m_version;
+}
+
+const std::string& replay::get_game_version() const {
+    return m_compatible_game_version;
+}
+
+const std::string &replay::get_mod_version() const {
+    return m_mod_version;
 }

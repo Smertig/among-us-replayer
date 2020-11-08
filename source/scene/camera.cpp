@@ -11,6 +11,10 @@ void camera::zoom(float value) {
     m_zoom *= value;
 }
 
+float camera::zoom() const {
+    return m_zoom;
+}
+
 void camera::set_center(sf::Vector2f center) {
     m_view.setCenter(center);
 }
@@ -28,7 +32,9 @@ void camera::move(sf::Vector2f delta) {
     m_view.move(delta);
 }
 
-void camera::process_event(const sf::Event& event, bool& was_dragged) {
+void camera::process_event(const sf::Event& event) {
+    m_was_dragged = false;
+
     switch (event.type) {
         case sf::Event::Resized: {
             resize({
@@ -65,7 +71,7 @@ void camera::process_event(const sf::Event& event, bool& was_dragged) {
 
                 m_last_mouse_drag_position = current_mouse_position;
 
-                was_dragged = true;
+                m_was_dragged = true;
             }
             break;
         }
@@ -74,6 +80,10 @@ void camera::process_event(const sf::Event& event, bool& was_dragged) {
             // nothing
         }
     }
+}
+
+bool camera::was_dragged() const {
+    return m_was_dragged;
 }
 
 } // namespace scene

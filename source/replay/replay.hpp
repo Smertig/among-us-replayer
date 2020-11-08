@@ -43,7 +43,7 @@ class replay {
 public:
     explicit replay() = default;
 
-    void parse(std::istream& is);
+    void parse(std::istream& is, bool header_only = false);
 
     int get_map_id() const;
 
@@ -52,4 +52,10 @@ public:
     bool is_meeting(int time) const;
 
     int get_duration() const;
+
+    int get_binary_version() const;
+
+    const std::string& get_game_version() const;
+
+    const std::string& get_mod_version() const;
 };
