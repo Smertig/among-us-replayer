@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         build_type: [ Debug ]
+        arch: [ Win32, x64 ]
 
     steps:
       - uses: actions/checkout@v2
@@ -26,7 +27,7 @@ jobs:
         shell: bash
         working-directory: ${{github.workspace}}/build
         run: |
-          cmake .. -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -A Win32
+          cmake .. -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -A ${{matrix.arch}}
 
       - name: Build replayer
         working-directory: ${{github.workspace}}/build
@@ -41,10 +42,11 @@ jobs:
           cmake -E copy bin/among-us-replayer.exe _dist/among-us-replayer.exe
           cmake -E copy bin/among-us-replayer.pdb _dist/among-us-replayer.pdb
           cmake -E copy_directory "${{github.workspace}}/res" _dist/res
+          [ "${{matrix.arch}}" == "x64" ] && cmake -E copy_directory "${{github.workspace}}/res_hq" _dist/res
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{matrix.build_type}}
+          name: ${{matrix.build_type}}-${{matrix.arch}}
           path: |
             ${{github.workspace}}/build/_dist
