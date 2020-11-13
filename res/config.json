@@ -1,0 +1,55 @@
+{
+	"maps": [
+		{
+			"path": "res/maps/skeld.png",
+			"player_pixel_width": 43,
+			"ghost_pixel_width": 43,
+			"body_pixel_width": 43,
+			"center": [ -0.9, 1.2 ],
+			"default_zoom": 0.75,
+			"calibration": {
+				"game_pos": [[ -13.481, -5.222 ], [ 8.055, -12.099 ]],
+				"texture_pos": [ [ 1338, 1204 ], [ 3285, 1822 ] ]
+			}
+		},
+		{
+			"path": "res/maps/mira_hq.png",
+			"player_pixel_width": 44,
+			"ghost_pixel_width": 44,
+			"body_pixel_width": 44,
+			"center": [ 24.0, 2.7 ],
+			"default_zoom": 0.75,
+			"calibration": {
+				"game_pos": [[ 21.92971, 0.87043285 ], [ 0.49999225, 10.945958 ]],
+				"texture_pos": [ [ 3189, 2676 ], [ 1263, 1766 ] ]
+			}
+		},
+		{
+			"path": "res/maps/polus.png",
+			"player_pixel_width": 44,
+			"ghost_pixel_width": 44,
+			"body_pixel_width": 44,
+			"center": [ 16.64, -2.00 ],
+			"default_zoom": 0.75,
+			"calibration": {
+				"game_pos": [[ 4.6196585, -7.158373 ], [ 37.61822, -21.090553 ]],
+				"texture_pos": [ [ 585, 997 ], [ 3446, 2204 ] ]
+			}
+		}
+	],
+	"player": {
+		"path": "res/player/{color}.png",
+		"pixel_width": 153,
+		"origin": [ 87, 204 ]
+	},
+	"ghost": {
+		"path": "res/ghost/{color}.png",
+		"pixel_width": 123,
+		"origin": [ 70, 141 ]
+	},
+	"body": {
+		"path": "res/body/{color}.png",
+		"pixel_width": 182,
+		"origin": [ 98, 123 ]
+	}
+}
