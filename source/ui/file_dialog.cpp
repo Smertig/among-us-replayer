@@ -4,6 +4,7 @@
 
 #include <fmt/format.h>
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <imgui_stdlib.h>
 
 #include <fstream>
@@ -39,6 +40,10 @@ ImColor convert_color(int color_id) {
     }
 }
 
+bool starts_with(std::string_view string, std::string_view prefix) {
+    return string.length() >= prefix.length() && string.substr(0, prefix.length()) == prefix;
+}
+
 } // unnamed namespace
 
 namespace ui {
@@ -46,11 +51,11 @@ namespace ui {
 file_dialog::file_dialog(std::function<void(const std::filesystem::path&)> open_file_callback)
     : m_open_file_callback(std::move(open_file_callback))
 {
-    if (try_set_path(fs::current_path()) || try_set_path(fs::temp_directory_path())) {
-        return;
+    if (!try_set_path(fs::current_path()) && !try_set_path(fs::temp_directory_path())) {
+        throw std::runtime_error("Unable to set default path");
     }
 
-    throw std::runtime_error("Unable to set default path");
+    add_settings_handler();
 }
 
 void file_dialog::update(int dt) {
@@ -206,6 +211,43 @@ void file_dialog::refresh_cache() {
 
         return left.display_name < right.display_name;
     });
+}
+
+void file_dialog::add_settings_handler() {
+    ImGuiSettingsHandler ini_handler;
+
+    ini_handler.TypeName = "FileDialog";
+    ini_handler.TypeHash = ImHashStr("FileDialog");
+    ini_handler.UserData = this; // TODO:  lifetime
+
+    ini_handler.ReadOpenFn = [](ImGuiContext*, ImGuiSettingsHandler*, const char* name) -> void* {
+        static int dummy_var;
+        return &dummy_var;
+    };
+
+    ini_handler.ReadLineFn = [](ImGuiContext*, ImGuiSettingsHandler* handler, void* entry, const char* line) {
+        auto self = static_cast<file_dialog*>(handler->UserData);
+
+        auto try_extract = [line](std::string_view prefix) -> std::optional<std::string_view> {
+            if (starts_with(line, prefix)) {
+                return line + prefix.length();
+            }
+            return std::nullopt;
+        };
+
+        if (auto saved_path = try_extract("path=")) {
+            self->try_set_path(std::filesystem::path{ *saved_path, std::filesystem::path::format::generic_format });
+        }
+    };
+
+    ini_handler.WriteAllFn = [](ImGuiContext* ctx, ImGuiSettingsHandler* handler, ImGuiTextBuffer* out_buf) {
+        auto self = static_cast<file_dialog*>(handler->UserData);
+
+        out_buf->appendf("[%s][Settings]\n", handler->TypeName);
+        out_buf->appendf("path=%s\n", self->m_current_path.generic_u8string().c_str());
+    };
+
+    ImGui::GetCurrentContext()->SettingsHandlers.push_back(ini_handler);
 }
 
 } // namespace ui

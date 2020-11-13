@@ -32,6 +32,7 @@ class app {
     };
 
     sf::RenderWindow         m_window;
+    bool                     m_imgui_inited; // small hack to init ImGui just after m_window creation
     scene::camera            m_camera;
     ui::file_dialog          m_ui_file_dialog;
     std::optional<map_state> m_current_map;

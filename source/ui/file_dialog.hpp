@@ -38,6 +38,8 @@ private:
     bool try_set_path(std::filesystem::path path);
 
     void refresh_cache();
+
+    void add_settings_handler();
 };
 
 } // namespace ui

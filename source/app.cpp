@@ -12,12 +12,12 @@
 
 app::app(const std::string& app_name)
     : m_window(sf::VideoMode::getFullscreenModes().front(), app_name)
+    , m_imgui_inited((ImGui::SFML::Init(m_window, false), true))
     , m_camera(m_window)
     , m_ui_file_dialog([this](std::filesystem::path replay_path) { open_replay(std::move(replay_path)); })
 {
     m_window.setVerticalSyncEnabled(true);
 
-    ImGui::SFML::Init(m_window, false);
     ::init_fonts();
 }
 
