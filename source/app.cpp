@@ -1,6 +1,8 @@
 #include "app.hpp"
 
 #include <resources/font.hpp>
+#include <resources/config.hpp>
+#include <resources/cache.hpp>
 #include <util/platform.hpp>
 #include <scene/player.hpp>
 
@@ -19,6 +21,10 @@ app::app(const std::string& app_name)
     m_window.setVerticalSyncEnabled(true);
 
     ::init_fonts();
+
+    for (int i = 0; i < 3; i++) {
+        resources::preload_sprite(resources::config::get_map_path(i));
+    }
 }
 
 app::~app() {

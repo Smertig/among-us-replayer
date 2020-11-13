@@ -1,17 +1,13 @@
 #include "map.hpp"
 #include "player.hpp"
 #include <resources/config.hpp>
+#include <resources/cache.hpp>
 
 #include <fmt/format.h>
 
 #include <stdexcept>
 
 namespace scene {
-
-void map::load_map() {
-    m_background.load(resources::config::get_map_path(m_id));
-    m_converter = resources::config::get_map_position_converter(m_id);
-}
 
 player& map::get_player(std::uint8_t id) {
     auto it = std::find_if(m_players.begin(), m_players.end(), [id](auto& pl) {
@@ -25,8 +21,8 @@ player& map::get_player(std::uint8_t id) {
     return **it;
 }
 
-map::map(int id) : m_id(id) {
-    load_map();
+map::map(int id) : m_id(id), m_background(resources::get_cached_sprite(resources::config::get_map_path(m_id))) {
+    m_converter = resources::config::get_map_position_converter(m_id);
 }
 
 map::~map() = default;

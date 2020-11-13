@@ -10,13 +10,11 @@ namespace scene {
 class player;
 
 class map {
-    resources::textured_sprite m_background;
+    int m_id;
+    const resources::textured_sprite& m_background;
     sf::Transform m_transform;
     std::vector<std::unique_ptr<player>> m_players;
-    int m_id;
     std::function<sf::Vector2f(const sf::Vector2f&)> m_converter;
-
-    void load_map();
 
     player& get_player(std::uint8_t id);
 
