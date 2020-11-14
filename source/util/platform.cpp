@@ -25,23 +25,4 @@ void fix_working_directory() {
     std::filesystem::current_path(std::filesystem::path(path.data()).parent_path());
 }
 
-std::optional<std::string> choose_replay_file() {
-    std::array<char, MAX_PATH> filename{};
-
-    ::OPENFILENAME ofn{};
-
-    ofn.lStructSize  = sizeof(ofn);
-    ofn.hwndOwner    = nullptr;
-    ofn.lpstrFilter  = "Among Us Replay Data (*.aurp)\0*.aurp\0Any File (*.*)\0*.*\0";
-    ofn.lpstrFile    = filename.data();
-    ofn.nMaxFile     = filename.size();
-    ofn.lpstrTitle   = "Choose replay data";
-    ofn.Flags        = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST;
-
-    if (!GetOpenFileNameA(&ofn))
-        return {};
-
-    return filename.data();
-}
-
 } // namespace platform
