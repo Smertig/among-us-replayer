@@ -60,4 +60,8 @@ const textured_sprite& get_cached_sprite(std::string_view path) {
     return it->second.get();
 }
 
+void clear_cache() {
+    g_sprite_cache.clear();
+}
+
 } // namespace resources

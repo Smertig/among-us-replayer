@@ -28,6 +28,8 @@ app::app(const std::string& app_name)
 }
 
 app::~app() {
+    resources::clear_cache();
+
     ImGui::SFML::Shutdown();
 }
 
