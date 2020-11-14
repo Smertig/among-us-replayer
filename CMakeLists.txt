@@ -11,17 +11,19 @@ conan_check()
 conan_add_remote(NAME conan-center URL https://conan.bintray.com)
 conan_add_remote(NAME bincrafters URL https://api.bintray.com/conan/bincrafters/public-conan)
 
-if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    set(MSVC_RUNTIME "MTd")
-else()
-    set(MSVC_RUNTIME "MT")
+if(MSVC)
+    if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+        set(REPLAYER_CONAN_SETTINGS "compiler.runtime=MTd")
+    else()
+        set(REPLAYER_CONAN_SETTINGS "compiler.runtime=MT")
+    endif()
 endif()
 
 conan_cmake_run(
         CONANFILE conanfile.py
         BASIC_SETUP CMAKE_TARGETS
         BUILD missing
-        SETTINGS compiler.runtime=${MSVC_RUNTIME}
+        SETTINGS "${REPLAYER_CONAN_SETTINGS}"
 )
 
 add_executable(${PROJECT_NAME}
