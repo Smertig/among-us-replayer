@@ -7,11 +7,22 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
-    name: Publish Release ${{github.ref}}
+    runs-on: ${{ matrix.os }}
+    name: Build Release ${{matrix.name}}
     strategy:
       matrix:
-        arch: [ Win32, x64 ]
+        include:
+        - name: Windows x86
+          archive_suffix: win-32
+          os: windows-latest
+          cmake_arch: -A Win32
+          is_hq: no
+
+        - name: Windows x86-64
+          archive_suffix: win-64
+          os: windows-latest
+          cmake_arch: -A x64
+          is_hq: yes
 
     steps:
       - uses: actions/checkout@v2
@@ -26,7 +37,7 @@ jobs:
         shell: bash
         working-directory: ${{github.workspace}}/build
         run: |
-          cmake .. -DCMAKE_BUILD_TYPE=Release -A ${{matrix.arch}}
+          cmake .. -DCMAKE_BUILD_TYPE=Release ${{matrix.cmake_arch}}
 
       - name: Build replayer
         working-directory: ${{github.workspace}}/build
@@ -40,8 +51,28 @@ jobs:
           cmake -E make_directory among-us-replayer
           cmake -E copy bin/among-us-replayer.exe among-us-replayer/among-us-replayer.exe
           cmake -E copy_directory "${{github.workspace}}/res" among-us-replayer/res
-          if [ "${{matrix.arch}}" == "x64" ]; then cmake -E copy_directory "${{github.workspace}}/res_hq" among-us-replayer/res; fi
-          cmake -E tar cfv among-us-replayer-${{matrix.arch}}.zip --format=zip among-us-replayer
+          if [ "${{matrix.is_hq}}" == "yes" ]; then cmake -E copy_directory "${{github.workspace}}/res_hq" among-us-replayer/res; fi
+          cmake -E tar cfv among-us-replayer-${{matrix.archive_suffix}}.zip --format=zip among-us-replayer
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: among-us-replayer-${{matrix.archive_suffix}}.zip
+          path: ${{github.workspace}}/build/among-us-replayer-${{matrix.archive_suffix}}.zip
+
+  publish:
+    needs: build
+    runs-on: windows-latest
+    name: Publish Release ${{github.ref}}
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: among-us-replayer-win-32.zip
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: among-us-replayer-win-64.zip
 
       - name: Publish
         uses: marvinpinto/action-automatic-releases@latest
@@ -50,4 +81,5 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            build/among-us-replayer-${{matrix.arch}}.zip
+            among-us-replayer-win-32.zip
+            among-us-replayer-win-64.zip
