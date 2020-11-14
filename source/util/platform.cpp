@@ -6,7 +6,26 @@
 #include <filesystem>
 #include <array>
 
+#if defined(_WIN32)
+
 #include <Windows.h>
+
+void show_warning_impl(std::string_view text) {
+    MessageBoxA(nullptr, std::string(text).c_str(), platform::get_app_fullname().c_str(), MB_ICONWARNING);
+}
+
+void fix_working_directory_impl() {
+    std::array<wchar_t, MAX_PATH> path = {};
+    GetModuleFileNameW(nullptr, path.data(), path.size());
+
+    std::filesystem::current_path(std::filesystem::path(path.data()).parent_path());
+}
+
+#else
+
+static_assert(false, "unsupported platform");
+
+#endif // defined(_WIN32)
 
 namespace platform {
 
@@ -15,14 +34,11 @@ std::string get_app_fullname() {
 }
 
 void show_warning(std::string_view text) {
-    MessageBoxA(nullptr, std::string(text).c_str(), get_app_fullname().c_str(), MB_ICONWARNING);
+    show_warning_impl(text);
 }
 
 void fix_working_directory() {
-    std::array<wchar_t, MAX_PATH> path = { 0 };
-    GetModuleFileNameW(nullptr, path.data(), path.size());
-
-    std::filesystem::current_path(std::filesystem::path(path.data()).parent_path());
+    fix_working_directory_impl();
 }
 
 } // namespace platform
