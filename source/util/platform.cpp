@@ -4,21 +4,23 @@
 #include <fmt/format.h>
 
 #include <filesystem>
-#include <array>
+
+// Platform specific stuff
 
 #if defined(_WIN32)
 
 #include <Windows.h>
+#include <array>
 
 void show_warning_impl(std::string_view text) {
     MessageBoxA(nullptr, std::string(text).c_str(), platform::get_app_fullname().c_str(), MB_ICONWARNING);
 }
 
-void fix_working_directory_impl() {
+std::filesystem::path get_self_path_impl() {
     std::array<wchar_t, MAX_PATH> path = {};
     GetModuleFileNameW(nullptr, path.data(), path.size());
 
-    std::filesystem::current_path(std::filesystem::path(path.data()).parent_path());
+    return path.data();
 }
 
 #else
@@ -26,6 +28,16 @@ void fix_working_directory_impl() {
 static_assert(false, "unsupported platform");
 
 #endif // defined(_WIN32)
+
+namespace {
+
+void fix_working_directory() {
+    const auto self_path = get_self_path_impl();
+
+    std::filesystem::current_path(self_path.parent_path());
+}
+
+} // unnamed namespace
 
 namespace platform {
 
@@ -37,8 +49,11 @@ void show_warning(std::string_view text) {
     show_warning_impl(text);
 }
 
-void fix_working_directory() {
-    fix_working_directory_impl();
+void on_app_start() {
+    // Try fix paths
+    if (!std::filesystem::exists("res/config.json")) {
+        fix_working_directory();
+    }
 }
 
 } // namespace platform

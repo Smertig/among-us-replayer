@@ -3,15 +3,9 @@
 
 #include <fmt/format.h>
 
-#include <optional>
-#include <filesystem>
-
 int main(int argc, char** argv) {
     try {
-        // Try fix paths
-        if (!std::filesystem::exists("res/config.json")) {
-            platform::fix_working_directory();
-        }
+        platform::on_app_start();
 
         app{ platform::get_app_fullname() }.run();
 
