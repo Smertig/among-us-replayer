@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
         return 0;
     }
     catch (std::exception& e) {
-        platform::msgbox_warning(fmt::format("ERROR:\n{}", e.what()));
+        platform::show_warning(fmt::format("ERROR:\n{}", e.what()));
         throw;
     }
 }

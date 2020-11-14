@@ -86,7 +86,7 @@ void app::open_replay(std::filesystem::path replay_path) {
         m_camera.zoom(m_current_map->map().get_default_zoom() / old_zoom);
     }
     catch (std::exception& e) {
-        platform::msgbox_warning(fmt::format("Unable to parse replay: {}", e.what()));
+        platform::show_warning(fmt::format("Unable to parse replay: {}", e.what()));
     }
 }
 

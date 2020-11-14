@@ -14,7 +14,7 @@ std::string get_app_fullname() {
     return fmt::format("{} v{}", app_info::name, app_info::version);
 }
 
-void msgbox_warning(std::string_view text) {
+void show_warning(std::string_view text) {
     MessageBoxA(nullptr, std::string(text).c_str(), get_app_fullname().c_str(), MB_ICONWARNING);
 }
 
