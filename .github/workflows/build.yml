@@ -28,12 +28,17 @@ jobs:
           archive_suffix: linux-64
           os: ubuntu-latest
           is_hq: yes
+          packages: sudo apt install g++-multilib
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install conan
-        run: pip install conan
+      - name: Install python packages
+        run: pip install cmake requests==2.24 conan==1.30.0
+
+      - name: Install dependencies
+        run: ${{matrix.packages}}
+        if: ${{matrix.packages}}
 
       - name: Create Build Environment
         run: cmake -E make_directory ${{github.workspace}}/build
