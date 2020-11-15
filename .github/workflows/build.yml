@@ -3,7 +3,7 @@ name: Build On Push
 on:
   push:
     branches:
-      - master
+      - linux-support
 
 jobs:
   build:
@@ -11,8 +11,23 @@ jobs:
     name: Build
     strategy:
       matrix:
-        build_type: [ Debug ]
-        arch: [ Win32, x64 ]
+        include:
+        - name: Windows x86
+          archive_suffix: win-32
+          os: windows-latest
+          cmake_arch: -A Win32
+          is_hq: no
+
+        - name: Windows x86-64
+          archive_suffix: win-64
+          os: windows-latest
+          cmake_arch: -A x64
+          is_hq: yes
+
+        - name: Linux x86-64
+          archive_suffix: linux-64
+          os: ubuntu-latest
+          is_hq: yes
 
     steps:
       - uses: actions/checkout@v2
@@ -27,12 +42,12 @@ jobs:
         shell: bash
         working-directory: ${{github.workspace}}/build
         run: |
-          cmake .. -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -A ${{matrix.arch}}
+          CONAN_SYSREQUIRES_MODE=enabled cmake .. -DCMAKE_BUILD_TYPE=Debug ${{matrix.cmake_arch}}
 
       - name: Build replayer
         working-directory: ${{github.workspace}}/build
         shell: bash
-        run: cmake --build . --config ${{matrix.build_type}} --target among-us-replayer
+        run: cmake --build . --config Debug --target among-us-replayer
 
       - name: Collect resources
         working-directory: ${{github.workspace}}/build
@@ -42,11 +57,11 @@ jobs:
           cmake -E copy bin/among-us-replayer.exe _dist/among-us-replayer.exe
           cmake -E copy bin/among-us-replayer.pdb _dist/among-us-replayer.pdb
           cmake -E copy_directory "${{github.workspace}}/res" _dist/res
-          if [ "${{matrix.arch}}" == "x64" ]; then cmake -E copy_directory "${{github.workspace}}/res_hq" _dist/res; fi
+          if [ "${{matrix.is_hq}}" == "yes" ]; then cmake -E copy_directory "${{github.workspace}}/res_hq" _dist/res; fi
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{matrix.build_type}}-${{matrix.arch}}
+          name: Debug-${{matrix.archive_suffix}}
           path: |
             ${{github.workspace}}/build/_dist
