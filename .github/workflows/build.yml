@@ -44,7 +44,7 @@ jobs:
           packages: |
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt update
-            sudo apt install g++-9 g++-multilib
+            sudo apt install linux-libc-dev:i386 gcc-9 g++-9 gcc-9-multilib g++-9-multilib
             echo "CC=gcc-9" >> $GITHUB_ENV
             echo "CXX=g++-9" >> $GITHUB_ENV
 
