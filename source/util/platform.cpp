@@ -23,11 +23,24 @@ std::filesystem::path get_self_path_impl() {
     return path.data();
 }
 
+#elif defined(__linux__)
+
+#include <fmt/color.h>
+
+void show_warning_impl(std::string_view text) {
+    fmt::print(fg(fmt::color::orange_red), "{}", text);
+    fmt::print("\n");
+}
+
+std::filesystem::path get_self_path_impl() {
+    return std::filesystem::read_symlink("/proc/self/exe");
+}
+
 #else
 
 static_assert(false, "unsupported platform");
 
-#endif // defined(_WIN32)
+#endif
 
 namespace {
 
