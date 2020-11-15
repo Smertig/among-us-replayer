@@ -33,8 +33,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '>=3.6'
+
       - name: Install python packages
-        run: pip install cmake requests==2.24 conan==1.30.0
+        run: pip3 install wheel cmake conan
 
       - name: Install dependencies
         run: ${{matrix.packages}}
