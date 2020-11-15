@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{matrix.os}}
     name: Build
     strategy:
       matrix:
@@ -55,7 +55,7 @@ jobs:
         run: |
           cmake -E make_directory _dist
           cmake -E copy bin/among-us-replayer.exe _dist/among-us-replayer.exe
-          cmake -E copy bin/among-us-replayer.pdb _dist/among-us-replayer.pdb
+          if [ "${{matrix.os}}" == "windows-latest" ]; then cmake -E copy bin/among-us-replayer.pdb _dist/among-us-replayer.pdb; fi
           cmake -E copy_directory "${{github.workspace}}/res" _dist/res
           if [ "${{matrix.is_hq}}" == "yes" ]; then cmake -E copy_directory "${{github.workspace}}/res_hq" _dist/res; fi
 
