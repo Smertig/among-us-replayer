@@ -28,7 +28,12 @@ jobs:
           archive_suffix: linux-64
           os: ubuntu-latest
           is_hq: yes
-          packages: sudo apt install g++-multilib
+          packages: |
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt update
+            sudo apt install g++-9 g++-multilib
+            echo "CC=gcc-9" >> $GITHUB_ENV
+            echo "CXX=g++-9" >> $GITHUB_ENV
 
     steps:
       - uses: actions/checkout@v2
