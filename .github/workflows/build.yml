@@ -69,8 +69,13 @@ jobs:
         shell: bash
         run: |
           cmake -E make_directory _dist
-          cmake -E copy bin/among-us-replayer.exe _dist/among-us-replayer.exe
-          if [ "${{matrix.os}}" == "windows-latest" ]; then cmake -E copy bin/among-us-replayer.pdb _dist/among-us-replayer.pdb; fi
+          if [ "${{matrix.os}}" == "windows-latest" ]
+          then
+            cmake -E copy bin/among-us-replayer.exe _dist/among-us-replayer.exe
+            cmake -E copy bin/among-us-replayer.pdb _dist/among-us-replayer.pdb
+          else
+            cmake -E copy bin/among-us-replayer _dist/among-us-replayer
+          fi
           cmake -E copy_directory "${{github.workspace}}/res" _dist/res
           if [ "${{matrix.is_hq}}" == "yes" ]; then cmake -E copy_directory "${{github.workspace}}/res_hq" _dist/res; fi
 
