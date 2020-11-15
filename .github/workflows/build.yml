@@ -24,6 +24,18 @@ jobs:
           cmake_arch: -A x64
           is_hq: yes
 
+        - name: Linux x86
+          archive_suffix: linux-32
+          os: ubuntu-latest
+          cmake_arch: -DCMAKE_CXX_FLAGS=-m32
+          is_hq: no
+          packages: |
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt update
+            sudo apt install g++-9 g++-multilib
+            echo "CC=gcc-9" >> $GITHUB_ENV
+            echo "CXX=g++-9" >> $GITHUB_ENV
+
         - name: Linux x86-64
           archive_suffix: linux-64
           os: ubuntu-latest
