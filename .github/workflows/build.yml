@@ -30,6 +30,7 @@ jobs:
           cmake_arch: -DCMAKE_CXX_FLAGS=-m32
           is_hq: no
           packages: |
+            sudo dpkg --add-architecture i386
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt update
             sudo apt install g++-9 g++-multilib
