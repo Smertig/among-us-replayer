@@ -13,14 +13,14 @@ conan_add_remote(NAME bincrafters URL https://api.bintray.com/conan/bincrafters/
 
 if(MSVC)
     if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        set(REPLAYER_CONAN_SETTINGS "${REPLAYER_CONAN_SETTINGS} SETTINGS compiler.runtime=MTd")
+        list(APPEND REPLAYER_CONAN_SETTINGS SETTINGS compiler.runtime=MTd)
     else()
-        set(REPLAYER_CONAN_SETTINGS "${REPLAYER_CONAN_SETTINGS} SETTINGS compiler.runtime=MT")
+        list(APPEND REPLAYER_CONAN_SETTINGS SETTINGS compiler.runtime=MT)
     endif()
 endif()
 
 if (REPLAYER_CONAN_ARCH)
-    set(REPLAYER_CONAN_SETTINGS "${REPLAYER_CONAN_SETTINGS} SETTINGS arch=${REPLAYER_CONAN_ARCH}")
+    list(APPEND REPLAYER_CONAN_SETTINGS SETTINGS arch=${REPLAYER_CONAN_ARCH})
 endif()
 
 conan_cmake_run(
