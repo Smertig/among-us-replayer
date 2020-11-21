@@ -71,7 +71,7 @@ void file_dialog::render() {
     ImGui::SetNextWindowPos(ImVec2{ 0, 0 }, ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2{ 600, 500 }, ImGuiCond_Always);
 
-    ImGui::Begin("File Choose Dialog", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoSavedSettings);
+    ImGui::Begin("Choose Replay File", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
 
     ImGui::Text("%s", ICON_FA_FOLDER);
     ImGui::SameLine();
