@@ -15,19 +15,19 @@ jobs:
         - name: Windows x86
           archive_suffix: win-32
           os: windows-latest
-          cmake_arch: -A Win32
+          cmake_flags: -A Win32
           is_hq: no
 
         - name: Windows x86-64
           archive_suffix: win-64
           os: windows-latest
-          cmake_arch: -A x64
+          cmake_flags: -A x64
           is_hq: yes
 
         - name: Linux x86
           archive_suffix: linux-32
           os: ubuntu-latest
-          cmake_arch: -DCMAKE_CXX_FLAGS=-m32
+          cmake_flags: -DCMAKE_CXX_FLAGS=-m32 -DREPLAYER_CONAN_ARCH=x86
           is_hq: no
           packages: |
             sudo dpkg --add-architecture i386
@@ -70,7 +70,7 @@ jobs:
         shell: bash
         working-directory: ${{github.workspace}}/build
         run: |
-          CONAN_SYSREQUIRES_MODE=enabled cmake .. -DCMAKE_BUILD_TYPE=Debug ${{matrix.cmake_arch}}
+          CONAN_SYSREQUIRES_MODE=enabled cmake .. -DCMAKE_BUILD_TYPE=Debug ${{matrix.cmake_flags}}
 
       - name: Build replayer
         working-directory: ${{github.workspace}}/build
