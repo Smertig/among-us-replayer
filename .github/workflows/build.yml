@@ -24,18 +24,18 @@ jobs:
           cmake_flags: -A x64
           is_hq: yes
 
-        - name: Linux x86
-          archive_suffix: linux-32
-          os: ubuntu-latest
-          cmake_flags: -DCMAKE_CXX_FLAGS=-m32 -DREPLAYER_CONAN_ARCH=x86
-          is_hq: no
-          packages: |
-            sudo dpkg --add-architecture i386
-            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-            sudo apt update
-            sudo apt install linux-libc-dev:i386 gcc-9 g++-9 gcc-9-multilib g++-9-multilib
-            echo "CC=gcc-9" >> $GITHUB_ENV
-            echo "CXX=g++-9" >> $GITHUB_ENV
+        #- name: Linux x86
+        #  archive_suffix: linux-32
+        #  os: ubuntu-latest
+        #  cmake_flags: -DCMAKE_CXX_FLAGS=-m32 -DREPLAYER_CONAN_ARCH=x86
+        #  is_hq: no
+        #  packages: |
+        #    sudo dpkg --add-architecture i386
+        #    sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        #    sudo apt update
+        #    sudo apt install linux-libc-dev:i386 gcc-9 g++-9 gcc-9-multilib g++-9-multilib
+        #    echo "CC=gcc-9" >> $GITHUB_ENV
+        #    echo "CXX=g++-9" >> $GITHUB_ENV
 
         - name: Linux x86-64
           archive_suffix: linux-64
