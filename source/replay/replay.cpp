@@ -8,7 +8,7 @@
 struct binary_deserializer {
     std::istream& is;
 
-    void read(std::time_t tp) {
+    void read(std::time_t& tp) {
         static_assert(sizeof(tp) == 8);
         read(reinterpret_cast<std::uint64_t&>(tp));
     }
