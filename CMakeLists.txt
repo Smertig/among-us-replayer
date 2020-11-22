@@ -36,6 +36,7 @@ add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/source/resources/textured_sprite.cpp
         ${PROJECT_SOURCE_DIR}/source/resources/font.cpp
         ${PROJECT_SOURCE_DIR}/source/resources/cache.cpp
+        ${PROJECT_SOURCE_DIR}/source/ui/utils.cpp
         ${PROJECT_SOURCE_DIR}/source/ui/player.cpp
         ${PROJECT_SOURCE_DIR}/source/ui/file_dialog.cpp
         ${PROJECT_SOURCE_DIR}/source/replay/replay.cpp
