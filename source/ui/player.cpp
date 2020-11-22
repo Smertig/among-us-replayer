@@ -2,6 +2,7 @@
 
 #include <replay/replay.hpp>
 #include <resources/font.hpp>
+#include <ui/utils.hpp>
 
 #include <imgui.h>
 
@@ -20,7 +21,7 @@ void player::update(int dt) {
 }
 
 void player::render() {
-    const float FIRST_COLUMN_WIDTH    = 150.0f;
+    const float FIRST_COLUMN_WIDTH    = 170.0f;
     const float SECOND_COLUMN_WIDTH   = 200.0f;
     const float EXPECTED_WINDOW_WIDTH = FIRST_COLUMN_WIDTH + SECOND_COLUMN_WIDTH + 20.0f;
 
@@ -53,21 +54,23 @@ void player::render() {
 
     std::optional<std::uint8_t> selected_player_id = m_traced_player_id;
     for (const auto& [id, player] : m_replay.get_players()) {
+        ImGui::ColorButton("##ColorButton", utils::convert_color(player.color));
+        ImGui::SameLine();
+
         auto color = player.impostor ? COLOR_RED : COLOR_WHITE;
         if (player.get_interpolated(m_time).is_dead) {
             color.w *= 0.3;
         }
-        ImGui::PushStyleColor(ImGuiCol_Text, color);
 
+        ImGui::PushStyleColor(ImGuiCol_Text, color);
         if (ImGui::Selectable(player.name.c_str(), id == m_traced_player_id)) {
             m_traced_player_id = id;
         }
+        ImGui::PopStyleColor();
 
         if (ImGui::IsItemHovered()) {
             selected_player_id = id;
         }
-
-        ImGui::PopStyleColor();
     }
 
     ImGui::NextColumn();
