@@ -168,7 +168,11 @@ void replay::parse(std::istream& is, bool header_only) {
                                 continue;
                             }
 
-                            assert(!player.timeline.empty());
+                            if (player.timeline.empty()) {
+                                assert(false);
+                                throw std::runtime_error(fmt::format("timeline for player #{} ('{}') is empty", player.id, player.name));
+                            }
+
                             auto copy = player.timeline.back();
                             copy.dt = dt;
                             player.timeline.push_back(std::move(copy));
