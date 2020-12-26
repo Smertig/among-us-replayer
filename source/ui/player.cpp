@@ -27,7 +27,7 @@ void player::render() {
 
     ImGui::SetNextWindowPos({ m_window.getSize().x / 2.0f - EXPECTED_WINDOW_WIDTH / 2.0f, 200.f }, ImGuiCond_FirstUseEver);
 
-    ImGui::Begin("Player", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoSavedSettings);
+    ImGui::Begin("Replayer", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
 
     const auto   BUTTON_SIZE = ImVec2(25, 25);
     const ImVec4 COLOR_WHITE = ImColor(0xFF, 0xFF, 0xFF);
