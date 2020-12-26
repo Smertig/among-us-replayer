@@ -45,7 +45,7 @@ Requirements:
 mkdir build && cd build
 
 # 2. Configure CMake project
-cmake .. -DCMAKE_BUILD_TYPE=Release -A Win32
+cmake .. -DCMAKE_BUILD_TYPE=Release
 
 # 3. Build project
 cmake --build . --config Release --target among-us-replayer
