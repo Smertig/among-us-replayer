@@ -122,6 +122,13 @@ void file_dialog::render() {
                 ImGui::Selectable(fmt::format("{} {}", ICON_FA_FILE, entry.display_name).c_str());
                 ImGui::PopStyleColor(1);
                 ImGui::NextColumn();
+
+                if (ImGui::IsItemHovered()) {
+                    ImGui::BeginTooltip();
+                    ImGui::TextColored(ImColor(0xFF, 0x33, 0x33), "Unable to parse replay");
+                    ImGui::Text("Exception: %s", data.exception.c_str());
+                    ImGui::EndTooltip();
+                }
             }
         }, entry.parse_result);
 

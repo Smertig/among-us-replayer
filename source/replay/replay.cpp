@@ -5,6 +5,23 @@
 #include <set>
 #include <cassert>
 
+namespace {
+
+std::string to_print(const std::array<char, 4>& arr) {
+    auto map_char = [](char c) {
+        if (std::isprint(static_cast<unsigned char>(c))) {
+            return std::string(1, c);
+        }
+        else {
+            return fmt::format("\\x{:02X}", static_cast<unsigned char>(c));
+        }
+    };
+
+    return map_char(arr[0]) + map_char(arr[1]) + map_char(arr[2]) + map_char(arr[3]);
+}
+
+} // unnamed namespace
+
 struct binary_deserializer {
     std::istream& is;
 
@@ -61,8 +78,7 @@ void replay::parse(std::istream& is, bool header_only) {
     deser.read(m_signature);
 
     if (m_signature != SIGNATURE) {
-        auto to_view = [](const auto& arr) { return std::string_view(arr.data(), arr.size()); };
-        throw std::runtime_error(fmt::format("unknown signature: {}, expected {}", to_view(m_signature), to_view(SIGNATURE)));
+        throw std::runtime_error(fmt::format("unknown signature: {}, expected {}", to_print(m_signature), to_print(SIGNATURE)));
     }
 
     deser.read(m_version, m_timestamp);
