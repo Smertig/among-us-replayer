@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <optional>
+#include <variant>
 #include <functional>
 
 #include <replay/replay.hpp>
@@ -16,10 +16,23 @@ namespace ui {
 
 class file_dialog {
     struct file_entry {
-        bool                  is_directory;
-        std::string           display_name;
-        std::filesystem::path path;
-        std::optional<replay> replay_data;
+        struct dir_data {};
+
+        struct replay_data {
+            replay r;
+        };
+
+        struct unknown_data {
+            std::string exception;
+        };
+
+        std::string                                       display_name;
+        std::filesystem::path                             path;
+        std::variant<dir_data, replay_data, unknown_data> parse_result;
+
+        bool is_directory() const {
+            return parse_result.index() == 0;
+        }
     };
 
     std::vector<file_entry> m_cache;

@@ -9,6 +9,7 @@
 #include <imgui_stdlib.h>
 
 #include <fstream>
+#include <optional>
 
 namespace fs = std::filesystem;
 
@@ -17,6 +18,12 @@ namespace {
 bool starts_with(std::string_view string, std::string_view prefix) {
     return string.length() >= prefix.length() && string.substr(0, prefix.length()) == prefix;
 }
+
+template <class... Ts> struct overloaded : Ts... {
+    using Ts::operator()...;
+};
+
+template <class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
 } // unnamed namespace
 
@@ -63,46 +70,48 @@ void file_dialog::render() {
 
     const replay* hovered_replay = nullptr;
     for (const file_entry& entry : m_cache) {
-        if (entry.is_directory) {
-            if (ImGui::Selectable(fmt::format("{} {}", ICON_FA_FOLDER_OPEN, entry.display_name).c_str())) {
-                try_set_path(entry.path);
-            }
-            ImGui::NextColumn();
-        }
-        else if (entry.replay_data) {
-            const auto& r = entry.replay_data.value();
-            const auto& players = r.get_players();
+        std::visit(overloaded{
+            [&](const file_entry::dir_data&) {
+                if (ImGui::Selectable(fmt::format("{} {}", ICON_FA_FOLDER_OPEN, entry.display_name).c_str())) {
+                    try_set_path(entry.path);
+                }
+                ImGui::NextColumn();
+            },
+            [&](const file_entry::replay_data& data) {
+                const auto& r = data.r;
+                const auto& players = r.get_players();
 
-            ImGui::PushStyleColor(ImGuiCol_Text, ImColor(153, 255, 128).Value);
-            if (ImGui::Selectable(fmt::format("{} {}", ICON_FA_FILE_CODE, entry.display_name.c_str()).c_str())) {
-                m_open_file_callback(entry.path);
-            }
-            ImGui::PopStyleColor(1);
-            ImGui::NextColumn();
+                ImGui::PushStyleColor(ImGuiCol_Text, ImColor(153, 255, 128).Value);
+                if (ImGui::Selectable(fmt::format("{} {}", ICON_FA_FILE_CODE, entry.display_name.c_str()).c_str())) {
+                    m_open_file_callback(entry.path);
+                }
+                ImGui::PopStyleColor(1);
+                ImGui::NextColumn();
 
-            if (ImGui::IsItemHovered()) {
-                hovered_replay = &r;
-            }
+                if (ImGui::IsItemHovered()) {
+                    hovered_replay = &r;
+                }
 
-            ImGui::TextColored(ImColor(43, 255, 54), "%s", utils::get_map_name(r.get_map_id()));
-            ImGui::SameLine(0.0f, 0.0f);
-            ImGui::TextColored(ImColor(227, 60, 54), " %zu", std::count_if(players.begin(), players.end(), [](const auto& pair) {
-                return pair.second.impostor;
-            }));
-            ImGui::SameLine(0.0f, 0.0f);
-            ImGui::TextColored(ImColor(255, 255, 255), "/");
-            ImGui::SameLine(0.0f, 0.0f);
-            ImGui::TextColored(ImColor(47, 250, 250), "%zu", players.size());
-            ImGui::SameLine(0.0f, 0.0f);
-            ImGui::TextColored(ImColor(216, 255, 77), " v%s", r.get_game_version().c_str());
-            ImGui::SameLine(0.0f, 0.0f);
-        }
-        else {
-            ImGui::PushStyleColor(ImGuiCol_Text, ImColor(180, 180, 180).Value);
-            ImGui::Selectable(fmt::format("{} {}", ICON_FA_FILE, entry.display_name).c_str());
-            ImGui::PopStyleColor(1);
-            ImGui::NextColumn();
-        }
+                ImGui::TextColored(ImColor(43, 255, 54), "%s", utils::get_map_name(r.get_map_id()));
+                ImGui::SameLine(0.0f, 0.0f);
+                ImGui::TextColored(ImColor(227, 60, 54), " %zu", std::count_if(players.begin(), players.end(), [](const auto& pair) {
+                    return pair.second.impostor;
+                }));
+                ImGui::SameLine(0.0f, 0.0f);
+                ImGui::TextColored(ImColor(255, 255, 255), "/");
+                ImGui::SameLine(0.0f, 0.0f);
+                ImGui::TextColored(ImColor(47, 250, 250), "%zu", players.size());
+                ImGui::SameLine(0.0f, 0.0f);
+                ImGui::TextColored(ImColor(216, 255, 77), " v%s", r.get_game_version().c_str());
+                ImGui::SameLine(0.0f, 0.0f);
+            },
+            [&](const file_entry::unknown_data& data) {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImColor(180, 180, 180).Value);
+                ImGui::Selectable(fmt::format("{} {}", ICON_FA_FILE, entry.display_name).c_str());
+                ImGui::PopStyleColor(1);
+                ImGui::NextColumn();
+            }
+        }, entry.parse_result);
 
         ImGui::NextColumn();
     }
@@ -150,37 +159,42 @@ void file_dialog::refresh_cache() {
     m_cache.clear();
 
     if (m_current_path.has_parent_path()) {
-        m_cache.push_back(file_entry{ true, "..", m_current_path.parent_path(), std::nullopt });
+        m_cache.push_back(file_entry{ "..", m_current_path.parent_path(), file_entry::dir_data{} });
     }
 
     for (const auto& dir_entry : fs::directory_iterator{ m_current_path }) {
-        const auto& entry_path = dir_entry.path();
+        auto parse_result = [&]() -> decltype(file_entry::parse_result) {
+            if (dir_entry.is_directory()) {
+                return file_entry::dir_data{};
+            }
 
-        std::optional<replay> replay_data;
-        if (!dir_entry.is_directory()) {
             try {
                 replay r;
                 std::fstream ifs(dir_entry.path(), std::fstream::binary | std::fstream::in);
                 ifs.exceptions(std::fstream::eofbit | std::fstream::failbit | std::fstream::badbit);
                 r.parse(ifs, true);
-                replay_data = std::move(r);
+                return file_entry::replay_data{ std::move(r) };
+            }
+            catch (std::exception& e) {
+                return file_entry::unknown_data{ e.what() };
             }
             catch (...) {
-                // nothing
+                return file_entry::unknown_data{ "???" };
             }
-        }
+        }();
+
+        const auto& entry_path = dir_entry.path();
 
         m_cache.push_back(file_entry{
-            dir_entry.is_directory(),
             entry_path.filename().generic_u8string(),
             entry_path,
-            std::move(replay_data)
+            std::move(parse_result)
         });
     }
 
     std::sort(m_cache.begin(), m_cache.end(), [](const auto& left, const auto& right) {
-        if (left.is_directory != right.is_directory) {
-            return left.is_directory;
+        if (left.is_directory() != right.is_directory()) {
+            return left.is_directory();
         }
 
         return left.display_name < right.display_name;
