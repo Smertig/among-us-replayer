@@ -82,18 +82,26 @@ void replay::parse(std::istream& is, bool header_only) {
     }
 
     deser.read(m_version, m_timestamp);
-    if (m_version != 2 && m_version != 3) {
-        throw std::runtime_error(fmt::format("unknown version: {}", m_version));
+    switch (m_version) {
+        case 2: {
+            throw std::runtime_error(fmt::format("deprecated aurp version (v{})\nUse replayer v0.4.1 (or older) to open it", m_version));
+        }
+
+        case 3: {
+            break;
+        }
+
+        default: {
+            if (m_version < 2) {
+                throw std::runtime_error(fmt::format("unknown aurp version (v{})", m_version));
+            }
+            else {
+                throw std::runtime_error(fmt::format("unknown aurp version (v{})\nTry to download newer replayer version", m_version));
+            }
+        }
     }
 
-    if (m_version >= 3) {
-        deser.read(m_mod_version, m_compatible_game_version, m_map_id);
-    }
-    else {
-        m_mod_version = "0.3.0";
-        m_compatible_game_version = "2020.9.22";
-        m_map_id = 0;
-    }
+    deser.read(m_mod_version, m_compatible_game_version, m_map_id);
 
     std::uint32_t player_num;
     deser.read(player_num);
@@ -116,37 +124,13 @@ void replay::parse(std::istream& is, bool header_only) {
 
             entry_type type;
             std::int32_t dt;
-            if (m_version >= 3) {
-                deser.read(type, dt);
-            }
-            else {
-                type = entry_type::frame_data;
-                // dt will be parsed later
-            }
+            deser.read(type, dt);
 
             switch (type) {
                 case entry_type::frame_data: {
                     bool need_refresh;
-                    if (m_version >= 3) {
-                        deser.read(need_refresh);
-                    }
-                    else {
-                        need_refresh = true;
-                        deser.read(dt);
-                    }
-
-                    std::uint8_t player_num = [this, &deser]() -> std::uint8_t {
-                        if (m_version >= 3) {
-                            std::uint8_t value;
-                            deser.read(value);
-                            return value;
-                        }
-                        else {
-                            std::uint32_t value;
-                            deser.read(value);
-                            return static_cast<std::uint8_t>(value);
-                        }
-                    }();
+                    std::uint8_t player_num;
+                    deser.read(need_refresh, player_num);
 
                     std::set<std::uint8_t> updated_players;
                     for (std::uint32_t i = 0; i < player_num; i++) {
@@ -156,16 +140,14 @@ void replay::parse(std::istream& is, bool header_only) {
 
                         deser.read(id, position, velocity, is_dead, is_disconnected);
 
-                        if (m_version >= 3) {
-                            std::uint8_t task_count;
-                            deser.read(task_count);
-                            for (std::uint8_t i = 0; i < task_count; i++) {
-                                bool is_complete;
-                                std::uint8_t type_id;
-                                std::uint32_t id;
-                                deser.read(is_complete, type_id, id);
-                                // TODO: save parsed tasks
-                            }
+                        std::uint8_t task_count;
+                        deser.read(task_count);
+                        for (std::uint8_t i = 0; i < task_count; i++) {
+                            bool is_complete;
+                            std::uint8_t type_id;
+                            std::uint32_t id;
+                            deser.read(is_complete, type_id, id);
+                            // TODO: save parsed tasks
                         }
 
                         m_players.at(id).timeline.emplace_back(player_info::player_state{
