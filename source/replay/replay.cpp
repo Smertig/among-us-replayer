@@ -101,7 +101,7 @@ void replay::parse(std::istream& is, bool header_only) {
         }
     }
 
-    deser.read(m_mod_version, m_compatible_game_version, m_map_id);
+    deser.read(m_mod_version, m_game_version, m_map_id);
 
     std::uint32_t player_num;
     deser.read(player_num);
@@ -266,7 +266,7 @@ int replay::get_binary_version() const {
 }
 
 const std::string& replay::get_game_version() const {
-    return m_compatible_game_version;
+    return m_game_version;
 }
 
 const std::string &replay::get_mod_version() const {

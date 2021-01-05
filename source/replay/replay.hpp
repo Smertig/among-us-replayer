@@ -36,7 +36,7 @@ class replay {
     std::uint32_t m_version;
     std::time_t m_timestamp;
     std::string m_mod_version;
-    std::string m_compatible_game_version;
+    std::string m_game_version;
     std::int32_t m_map_id;
     std::map<std::uint8_t, player_info> m_players;
 
