@@ -68,7 +68,6 @@ void file_dialog::render() {
 
     ImGui::SetColumnWidth(0, 380.0f);
 
-    const replay* hovered_replay = nullptr;
     for (const file_entry& entry : m_cache) {
         std::visit(overloaded{
             [&](const file_entry::dir_data&) {
@@ -89,7 +88,20 @@ void file_dialog::render() {
                 ImGui::NextColumn();
 
                 if (ImGui::IsItemHovered()) {
-                    hovered_replay = &r;
+                    ImGui::BeginTooltip();
+                    ImGui::Text("Map: %s", utils::get_map_name(r.get_map_id()));
+                    ImGui::Text("Game version: %s", r.get_game_version().c_str());
+                    ImGui::Text("Mod version: %s", r.get_mod_version().c_str());
+
+                    ImGui::Separator();
+
+                    for (const auto& [id, player] : r.get_players()) {
+                        ImGui::ColorButton("##ColorButton", utils::convert_color(player.color));
+                        ImGui::SameLine();
+                        ImGui::TextColored(player.impostor ? ImColor(0xFF, 0x33, 0x33) : ImColor(0xFF, 0xFF, 0xFF), "%s", player.name.c_str());
+                    }
+
+                    ImGui::EndTooltip();
                 }
 
                 ImGui::TextColored(ImColor(43, 255, 54), "%s", utils::get_map_name(r.get_map_id()));
@@ -117,23 +129,6 @@ void file_dialog::render() {
     }
 
     ImGui::Columns();
-
-    if (hovered_replay) {
-        ImGui::BeginTooltip();
-        ImGui::Text("Map: %s", utils::get_map_name(hovered_replay->get_map_id()));
-        ImGui::Text("Game version: %s", hovered_replay->get_game_version().c_str());
-        ImGui::Text("Mod version: %s", hovered_replay->get_mod_version().c_str());
-
-        ImGui::Separator();
-
-        for (const auto& [id, player] : hovered_replay->get_players()) {
-            ImGui::ColorButton("##ColorButton", utils::convert_color(player.color));
-            ImGui::SameLine();
-            ImGui::TextColored(player.impostor ? ImColor(0xFF, 0x33, 0x33) : ImColor(0xFF, 0xFF, 0xFF), "%s", player.name.c_str());
-        }
-
-        ImGui::EndTooltip();
-    }
 
     ImGui::EndChild();
 
