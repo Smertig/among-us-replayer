@@ -20,8 +20,8 @@ player::player(std::uint8_t id, std::uint8_t color, const std::string& name, boo
 
     static sf::Font font = []{
         sf::Font font;
-        if (!font.loadFromFile("res/arial.ttf")) {
-            throw std::runtime_error("unable to load res/arial.ttf font");
+        if (!font.loadFromFile("res/NotoSerifCJK-Black.ttc")) {
+            throw std::runtime_error("unable to load res/NotoSerifCJK-Black.ttc font");
         }
         return font;
     }();
