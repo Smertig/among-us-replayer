@@ -37,7 +37,7 @@ jobs:
         run: |
           cmake -E make_directory _dist
           cmake -E copy bin/among-us-replayer.exe _dist/among-us-replayer.exe
-          cmake -E copy bin/among-us-replayer.pdb _dist/among-us-replayer.pdb
+          if [ "${{matrix.build_type}}" == "Debug" ]; then cmake -E copy bin/among-us-replayer.pdb _dist/among-us-replayer.pdb; fi
           cmake -E copy_directory "${{github.workspace}}/res" _dist/res
           if [ "${{matrix.arch}}" == "x64" ]; then cmake -E copy_directory "${{github.workspace}}/res_hq" _dist/res; fi
 
