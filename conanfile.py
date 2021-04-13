@@ -17,3 +17,4 @@ class AmongUsReplayerConan(ConanFile):
         self.options["sfml"].audio = False
         self.options["sfml"].network = False
         self.options["nlohmann_json"].implicit_conversions = False
+        self.options["freetype"].with_bzip2 = False
