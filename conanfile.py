@@ -6,7 +6,7 @@ class AmongUsReplayerConan(ConanFile):
 
     requires = [
         "sfml/2.5.1",
-        "imgui-sfml/2.1@bincrafters/stable",
+        "imgui-sfml/2.5@bincrafters/stable",
         "fmt/7.0.3",
         "nlohmann_json/3.10.5"
     ]

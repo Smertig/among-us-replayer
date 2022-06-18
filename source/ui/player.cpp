@@ -44,7 +44,7 @@ void player::render() {
     ImGui::SameLine();
     ImGui::SliderInt("##Frame", &m_time, m_time_min, m_time_max);
 
-    ImGui::SliderFloat("Speed", &m_speed, 0.0f, 30.0f, "%.2f", 2.f);
+    ImGui::SliderFloat("Speed", &m_speed, 0.0f, 30.0f, "%.2f", ImGuiSliderFlags_Logarithmic);
 
     ImGui::Separator();
 
