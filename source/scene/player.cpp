@@ -5,18 +5,27 @@
 
 namespace scene {
 
-player::player(std::uint8_t id, std::uint8_t color, const std::string& name, bool is_impostor) {
+player::player(std::uint8_t id, std::uint8_t color_id, const std::string& name, bool is_impostor) {
     m_id = id;
 
-    m_alive_sprite.load(resources::config::get_player_path(color));
-    m_alive_sprite.setOrigin(resources::config::get_player_origin());
+    auto color = [color_id] {
+        const auto result = resources::config::try_get_color(color_id);
+        if (!result) {
+            throw std::runtime_error(fmt::format("unexpected color id #{}", color_id));
+        }
 
-    m_dead_sprite.load(resources::config::get_ghost_path(color));
-    m_dead_sprite.setOrigin(resources::config::get_ghost_origin());
-    m_dead_sprite.setColor(sf::Color(255, 255, 255, 100));
+        return *result;
+    }();
 
-    m_dead_body_sprite.load(resources::config::get_body_path(color));
-    m_dead_body_sprite.setOrigin(resources::config::get_body_origin());
+    auto init_sprite = [color](colored_sprite& sprite, const auto& config, std::uint8_t alpha = 0xFF) {
+        sprite.load(config.frame_path, config.inner_path);
+        sprite.setColor(sf::Color(color.r, color.g, color.b, alpha));
+        sprite.setOrigin(config.origin);
+    };
+
+    init_sprite(m_alive_sprite, resources::config::get_player_texture());
+    init_sprite(m_dead_sprite, resources::config::get_ghost_texture(), 130);
+    init_sprite(m_dead_body_sprite, resources::config::get_body_texture());
 
     static sf::Font font = []{
         sf::Font font;
@@ -45,11 +54,12 @@ void player::set_scale(float alive_scale, float dead_scale, float dead_body_scal
 
     // dirty hacks..
     const auto expected_width = 87.f;
-    const auto real_width = m_alive_sprite.getLocalBounds().width * alive_scale;
+    const auto actual_size = m_alive_sprite.frame.getLocalBounds();
+    const auto real_width = actual_size.width * alive_scale;
 
     m_name.setCharacterSize(static_cast<unsigned>(25 * real_width / expected_width));
     m_name.setOutlineThickness(2.0f * real_width / expected_width);
-    m_name.setPosition(std::round(-m_name.getLocalBounds().width / 2.f), std::round(-m_alive_sprite.getLocalBounds().height * 1.2f * alive_scale));
+    m_name.setPosition(std::round(-m_name.getLocalBounds().width / 2.f), std::round(-actual_size.height * 1.2f * alive_scale));
 }
 
 void player::set_position(sf::Vector2f pos, bool dir_is_right) {

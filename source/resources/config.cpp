@@ -19,7 +19,8 @@ void from_json(const nlohmann::json& j, sf::Vector2<T>& result) {
 namespace resources {
 
 void from_json(const nlohmann::json& j, config::texture_config& result) {
-    result.path = j.at("path").get<std::string>();
+    result.frame_path = j.at("frame_path").get<std::string>();
+    result.inner_path = j.at("inner_path").get<std::string>();
     result.width = j.at("pixel_width").get<float>();
     result.origin = j.at("origin").get<sf::Vector2f>();
 }
@@ -74,25 +75,18 @@ resources::config::config() {
             throw std::runtime_error("expected color in form #RRGGBB");
         }
 
-        m_colors.emplace_back(std::stol(color_string.substr(1), nullptr, 16));
+        std::uint32_t color = std::stol(color_string.substr(1), nullptr, 16);
+        m_colors.emplace_back(rgb_color{
+            /* .r = */ static_cast<std::uint8_t>(color >> 16),
+            /* .g = */ static_cast<std::uint8_t>(color >>  8),
+            /* .b = */ static_cast<std::uint8_t>(color >>  0)
+        });
     }
 }
 
 const config &config::instance() {
     static const config instance;
     return instance;
-}
-
-const sf::Vector2f& config::get_player_origin() {
-    return instance().m_player.origin;
-}
-
-const sf::Vector2f& config::get_ghost_origin() {
-    return instance().m_ghost.origin;
-}
-
-const sf::Vector2f& config::get_body_origin() {
-    return instance().m_body.origin;
 }
 
 float config::get_player_scale(int map_id) {
@@ -123,19 +117,19 @@ const sf::Vector2f &config::get_center(int map_id) {
     return instance().m_maps.at(map_id).center;
 }
 
-std::string config::get_player_path(int color) {
-    return fmt::format(instance().m_player.path, fmt::arg("color", color));
+const config::texture_config& config::get_player_texture() {
+    return instance().m_player;
 }
 
-std::string config::get_ghost_path(int color) {
-    return fmt::format(instance().m_ghost.path, fmt::arg("color", color));
+const config::texture_config& config::get_ghost_texture() {
+    return instance().m_ghost;
 }
 
-std::string config::get_body_path(int color) {
-    return fmt::format(instance().m_body.path, fmt::arg("color", color));
+const config::texture_config& config::get_body_texture() {
+    return instance().m_body;
 }
 
-std::optional<std::uint32_t> config::try_get_color(int color_id) {
+std::optional<rgb_color> config::try_get_color(int color_id) {
     const auto& colors = instance().m_colors;
     if (color_id >= colors.size()) {
         return std::nullopt;

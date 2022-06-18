@@ -38,17 +38,20 @@
 		}
 	],
 	"player": {
-		"path": "res/player/{color}.png",
+		"frame_path": "res/player/frame.png",
+		"inner_path": "res/player/inner.png",
 		"pixel_width": 153,
 		"origin": [ 87, 204 ]
 	},
 	"ghost": {
-		"path": "res/ghost/{color}.png",
+		"frame_path": "res/ghost/frame.png",
+		"inner_path": "res/ghost/inner.png",
 		"pixel_width": 123,
 		"origin": [ 70, 141 ]
 	},
 	"body": {
-		"path": "res/body/{color}.png",
+		"frame_path": "res/body/frame.png",
+		"inner_path": "res/body/inner.png",
 		"pixel_width": 182,
 		"origin": [ 98, 123 ]
 	},

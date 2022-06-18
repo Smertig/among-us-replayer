@@ -15,7 +15,7 @@ const char* get_map_name(int map_id) {
 
 ImColor ui::utils::convert_color(int color_id) {
     const auto color = resources::config::try_get_color(color_id);
-    return color ? ImColor(*color) : ImColor();
+    return color ? ImColor(color->r, color->g, color->b) : ImColor();
 }
 
 } // namespace ui::utils
