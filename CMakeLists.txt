@@ -9,6 +9,7 @@ include(cmake/conan.cmake)
 
 conan_check()
 conan_add_remote(NAME conan-center URL https://center.conan.io)
+conan_add_remote(NAME bincrafters URL https://bincrafters.jfrog.io/artifactory/api/conan/conan)
 
 if(MSVC)
     if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
