@@ -45,3 +45,4 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CONAN_TARGETS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/source)
+target_compile_definitions(${PROJECT_NAME} PRIVATE JSON_USE_IMPLICIT_CONVERSIONS=0)
