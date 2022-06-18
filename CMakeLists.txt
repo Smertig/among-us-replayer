@@ -8,8 +8,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # CMake 
 include(cmake/conan.cmake)
 
 conan_check()
-conan_add_remote(NAME conan-center URL https://conan.bintray.com)
-conan_add_remote(NAME bincrafters URL https://api.bintray.com/conan/bincrafters/public-conan)
+conan_add_remote(NAME conan-center URL https://center.conan.io)
 
 if(MSVC)
     if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
