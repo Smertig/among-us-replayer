@@ -67,6 +67,15 @@ resources::config::config() {
     if (m_maps.size() != 3) {
         throw std::runtime_error("expected 3 maps in config");
     }
+
+    const auto color_strings = config.at("colors").get<std::vector<std::string>>();
+    for (const auto& color_string : color_strings) {
+        if (color_string.size() != 7 || color_string[0] != '#') {
+            throw std::runtime_error("expected color in form #RRGGBB");
+        }
+
+        m_colors.emplace_back(std::stol(color_string.substr(1), nullptr, 16));
+    }
 }
 
 const config &config::instance() {
@@ -124,6 +133,15 @@ std::string config::get_ghost_path(int color) {
 
 std::string config::get_body_path(int color) {
     return fmt::format(instance().m_body.path, fmt::arg("color", color));
+}
+
+std::optional<std::uint32_t> config::try_get_color(int color_id) {
+    const auto& colors = instance().m_colors;
+    if (color_id >= colors.size()) {
+        return std::nullopt;
+    }
+
+    return colors[color_id];
 }
 
 } // namespace resources

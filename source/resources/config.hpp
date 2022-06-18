@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <optional>
 
 namespace resources {
 
@@ -31,6 +32,7 @@ private:
     texture_config m_player;
     texture_config m_ghost;
     texture_config m_body;
+    std::vector<std::uint32_t> m_colors;
 
     config();
 
@@ -53,6 +55,8 @@ public:
     static std::string get_player_path(int color);
     static std::string get_ghost_path(int color);
     static std::string get_body_path(int color);
+
+    static std::optional<std::uint32_t> try_get_color(int color_id);
 };
 
 } // namespace resources

@@ -51,5 +51,19 @@
 		"path": "res/body/{color}.png",
 		"pixel_width": 182,
 		"origin": [ 98, 123 ]
-	}
+	},
+	"colors": [
+		"#C51111",
+		"#132ED1",
+		"#117F2D",
+		"#ED54BA",
+		"#EF7D0D",
+		"#F5F557",
+		"#3F474E",
+		"#D6E0F0",
+		"#6B2FBB",
+		"#71491E",
+		"#38FEDC",
+		"#50EF39"
+	]
 }
