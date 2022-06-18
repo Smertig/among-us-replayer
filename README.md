@@ -6,6 +6,7 @@
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
   <a href="https://github.com/Smertig/among-us-replayer/releases/latest"><img src="https://img.shields.io/github/v/release/Smertig/among-us-replayer.svg" alt="Latest Release"></a>
   <a href="https://github.com/Smertig/among-us-replayer/actions"><img src="https://github.com/Smertig/among-us-replayer/workflows/Build%20On%20Push/badge.svg" alt="GitHub Actions"></a>
+  <img src="https://img.shields.io/github/downloads/smertig/among-us-replayer/total">
 </p>
 
 # Among Us Replayer</b>
